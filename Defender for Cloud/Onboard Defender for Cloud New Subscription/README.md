@@ -1,13 +1,13 @@
-# Onboard a new subscription to DFC with a custom log analytics workspace using PowerShell
+# Onboard a new subscription to MDC with custom log analytics workspace by PowerShell
 
 **Author  : Rotem Simhi**  
 **Reviewer: Shay Amar**
 
 ## Description
 
-I was asked to create a seemless onboarding experience for new subscriptions created for a customer's tenant.  I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So I have created this walkthrough to help with the process.
+I was asked to create a seamless onboarding experience for new subscriptions created for a customer's tenant.  I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So I have created this walkthrough to help with the process.
 
-As you can see I start my walkthrough with zero subscriptions protected by Microsoft Defender for Cloud
+As you can see, I started my walkthrough with zero subscriptions protected by Microsoft Defender for Cloud
 
 ![Workload Protection new deployment](./Screenshots/NewDeployment.jpg)
 
@@ -29,7 +29,7 @@ Install-module -Name az -MinimumVersion 8.0.0
 ```
 
 
-Lets define our workspace parameters and connect to our Azure account
+let's define our workspace parameters and connect to our Azure account
 
 ```
 $SubscriptionId    = '<SubscriptionId>'
@@ -59,7 +59,7 @@ Register-AzResourceProvider -ProviderNamespace 'Microsoft.Security'
 
 ### Onboard your subscription to Defender for Cloud
 
-Choose the Defender plans you plan to enable, you could choose from the list:
+Choose the Defender plans you plan to enable from the list to the $DefenderPlans variable:
 
 ```
 <# Defender Plan List
@@ -97,7 +97,7 @@ foreach ($DefenderPlan in $SecurityPricing){
 
 ```
 
-Through the Environment Settings blade we can see that our subscription has registered new plans
+Through the 'Environment Settings' blade we can see that our subscription has registered new plans
 
 ![DFC Environment Settings](./Screenshots/EnvironmentSettings.jpg)
 
@@ -118,7 +118,7 @@ Set-AzSecurityWorkspaceSetting -Name $WorkspaceSettingName `
 Set-AzSecurityAutoProvisioningSetting -Name $WorkspaceSettingName -EnableAutoProvision
 ```
 
-The Auto provisioning extention for Log Analytics Agent is enabled and we successfully replaced the default workspace to our new one.
+The Auto provisioning extension for Log Analytics Agent is enabled and we successfully replaced the default workspace to our new one.
 
 ![DFC Enable Auto Provision](./Screenshots/EnableAutoProvision.jpg)
 
@@ -137,7 +137,7 @@ foreach ($SolutionType in $SolutionTypes) {
                                   -Type $SolutionType
 }
 ```
-The defender plan is enable for the Log Analytics Workspace in the Defender for Cloud.
+The defender plan is now enabled for the Log Analytics Workspace in the Defender for Cloud.
 ![LawSolutions](./Screenshots/EnvironmentSettingsLaw.jpg)
 ![Defender Plans LAW](./Screenshots/DefenderPlansLAW.jpg)
 
@@ -146,7 +146,7 @@ The Solutions are also registered in the Log Analytics Workspace
 
 
 
-### Set Security event collection tier
+### Set Security Event Collection Tier
 This section is tricky as it requires us to create a request header using our bearer token from the session (This is where we use the $Context variable again).  
 After that we need to choose the collection tier we want and invoke a web request to deploy our changes.
 
@@ -173,13 +173,13 @@ $RestURI = 'https://management.azure.com/subscriptions/{0}/resourcegroups/{1}/pr
 Invoke-RestMethod -Uri $RestURI -Method Put -Body $jsonBody -Headers $requestHeader
 ```
 
-Now the Common windows security events will be store our Log Analytics Workspace
+Now the Common windows security events will be stored in our Log Analytics Workspace
 ![Environment Settings Law Data Collection](./Screenshots/EnvironmentSettingsLawDataCollection.jpg)
 ![LAW Data Collection Plan](./Screenshots/LawDataCollectionPlan.jpg)
 
 
 
-[The full script](./New-AzDefenderforCloudSubscription.ps1) has been created to enable defender plans, auto provisioning and the configuration of a new log analytics workspace on an existing subscription. It is seperated into regions so that you could choose which part you need for yourself.
+[The full script](./New-AzDefenderforCloudSubscription.ps1) has been created to enable defender plans, auto provisioning and the configuration of a new log analytics workspace on an existing subscription. It is separated into regions so that you would be able to choose which part you need for yourself.
 
 ### Prerequisites
 
