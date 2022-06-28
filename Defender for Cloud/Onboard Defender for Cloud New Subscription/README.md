@@ -5,7 +5,7 @@
 
 ## Description
 
-I was asked to create a seamless onboarding experience for new subscriptions created for a customer's tenant.  I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So I have created this walkthrough to help with the process.
+I was asked to create a seamless onboarding experience for new subscriptions created for a customer's tenant.  I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So, I have created this walkthrough to help with the process.
 
 As you can see, I started my walkthrough with zero subscriptions protected by Microsoft Defender for Cloud
 
