@@ -1,4 +1,4 @@
-# Onboard a new subscription to DFC with a custom log analytics workspace
+# Onboard a new subscription to DFC with a custom log analytics workspace using PowerShell
 
 **Author  : Rotem Simhi**
 **Reviewer: Shay Amar**
