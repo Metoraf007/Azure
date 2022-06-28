@@ -1,6 +1,7 @@
-# Onboard new subscription to DFC with an external log analytics workspace
+# Onboard a new subscription to DFC with a custom log analytics workspace
 
-**Author: Rotem Simhi**
+**Author  : Rotem Simhi**
+**Reviewer: Shay Amar**
 
 ## Description
 
