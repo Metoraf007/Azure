@@ -6,7 +6,7 @@
 
 I was asked to create a seemless onboarding experience for new subscriptions created for a customer's tenant. I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So I have created this walkthrough to help with the process.
 
-![Workload Protection new deployment](./Screenshots/NewDeployment.png)
+![Workload Protection new deployment](./Screenshots/NewDeployment.jpg)
 
 ### First, the beginning 
 
