@@ -1,4 +1,4 @@
-# Microsoft Defender for Cloud - Onboard new subscription with a different log analytics workspace
+# Onboard new subscription with a different log analytics workspace
 
 **Author: Rotem Simhi**
 
@@ -6,26 +6,39 @@
 
 I was asked to create a seemless onboarding experience for new subscriptions created for a customer's tenant. I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So I have created this walkthrough to help with the process.
 
+As you can see I start my walkthrough with zero subscriptions protected by Microsoft Defender for Cloud
+
 ![Workload Protection new deployment](./Screenshots/NewDeployment.jpg)
 
 ### First, the beginning 
 
-We need to import some AZ modules and connect to our tenant. 
+
+### Prerequisites
+
+- You need to run the script with a user account that has **Security Admin** access rights to enable/disable Microsoft Defender plans.
+- You need to run the script with a user account that has workspace permissions to [add and remove monitoring solutions](https://docs.microsoft.com/en-us/azure/azure-monitor/logs/manage-access?tabs=portal#azure-rbac) (These permissions need to be granted at a resource group or subscription level).
+- Make sure to use the latest version of the [Az.Security PowerShell module](https://docs.microsoft.com/powershell/module/az.security).
+- Make sure to use the latest version of the [Az.monitoringsolutions PowerShell module](https://docs.microsoft.com/powershell/module/az.monitoringsolutions).
+
+
+We need to import AZ modules and connect to our tenant. If you don't have the AZ module installed, please do so using the following command:
 
 ```
-#Requires -Modules az.security
-#Requires -Modules az.monitoringsolutions
+Install-module -Name az -MinimumVersion 8.0.0
+```
 
-# Define the Params
-Param(
-    $SubscriptionId    = '<SubscriptionId>',
-    $ResourceGroupName = '<ResourceGroupName>',
-    $WorkSpaceName     = '<WorkSpaceName>',
-    $tenantID          = '<tenantID>'
-)
+
+Lets define our workspace parameters and connect to our Azure account
+
+```
+$SubscriptionId    = '<SubscriptionId>'
+$ResourceGroupName = '<ResourceGroupName>'
+$WorkSpaceName     = '<WorkSpaceName>'
+$tenantID          = '<tenantID>'
 
 Connect-AzAccount -Tenant $tenantID -SubscriptionId $SubscriptionId
 ```
+
 
 Running in an Azure DevOps pipeline we are able to use the existing connection of the service principle and set the context with the predefined subscription. but for we would need to set the context of the connection to a variable for later.
 
@@ -34,6 +47,7 @@ Running in an Azure DevOps pipeline we are able to use the existing connection o
 $Context  = Set-AzContext -SubscriptionId $SubscriptionId
 ```
 
+
 Now we can register Microsoft.Security as a resource provider in the new subscription.
 
 ```
@@ -41,9 +55,11 @@ Register-AzResourceProvider -ProviderNamespace 'Microsoft.Security'
 
 ```
 
+
 ### Onboard your subscription to Defender for Cloud
 
 Choose the Defender plans you plan to enable, you could choose from the list:
+
 ```
 <# Defender Plan List
 VirtualMachines              
@@ -80,12 +96,17 @@ foreach ($DefenderPlan in $SecurityPricing){
 
 ```
 
+Through the Environment Settings blade we can see that our subscription has registered new plans
+
 ![DFC Environment Settings](./Screenshots/EnvironmentSettings.jpg)
+
+Diving in we see which of the plans were enabled
+
 ![Defender Plans](./Screenshots/DefenderPlans.jpg)
 
 
 ### Configure Environment Settings for the Subscription in the Defender for Cloud
-Set the Subscription to send data to a specific workspace and enable Auto Provisioning.
+Here we set the subscription to send data to a specific workspace and enable Auto Provisioning.
 
 ```
 $WorkspaceSettingName = "default"
@@ -96,10 +117,13 @@ Set-AzSecurityWorkspaceSetting -Name $WorkspaceSettingName `
 Set-AzSecurityAutoProvisioningSetting -Name $WorkspaceSettingName -EnableAutoProvision
 ```
 
+The Auto provisioning extention for Log Analytics Agent is enabled and we successfully replaced the default workspace to our new one.
+
 ![DFC Enable Auto Provision](./Screenshots/EnableAutoProvision.jpg)
 
 
 ### Enable the Log Analytics Workspace Solution
+Next, we need to register the Defender for Cloud solutions on our new Log Analytics Workspace.
 
 ```
 $Workspace = Get-AzOperationalInsightsWorkspace -ResourceGroupName $ResourceGroupName -Name $WorkSpaceName
@@ -112,10 +136,13 @@ foreach ($SolutionType in $SolutionTypes) {
                                   -Type $SolutionType
 }
 ```
-
-![Defender Plans LAW](./Screenshots/DefenderPlansLAW.jpg)
-![LawSolutions](./Screenshots/LawSolutions.jpg)
+The defender plan is enable for the Log Analytics Workspace in the Defender for Cloud.
 ![LawSolutions](./Screenshots/EnvironmentSettingsLaw.jpg)
+![Defender Plans LAW](./Screenshots/DefenderPlansLAW.jpg)
+
+The Solutions are also registered in the Log Analytics Workspace
+![LawSolutions](./Screenshots/LawSolutions.jpg)
+
 
 
 ### Set Security event collection tier
@@ -145,13 +172,13 @@ $RestURI = 'https://management.azure.com/subscriptions/{0}/resourcegroups/{1}/pr
 Invoke-RestMethod -Uri $RestURI -Method Put -Body $jsonBody -Headers $requestHeader
 ```
 
+Now the Common windows security events will be store our Log Analytics Workspace
 ![Environment Settings Law Data Collection](./Screenshots/EnvironmentSettingsLawDataCollection.jpg)
 ![LAW Data Collection Plan](./Screenshots/LawDataCollectionPlan.jpg)
 
 
 
 [The full script](./New-AzDefenderforCloudSubscription.ps1) has been created to enable defender plans, auto provisioning and the configuration of a new log analytics workspace on an existing subscription. It is seperated into regions so that you could choose which part you need for yourself.
-
 
 ### Prerequisites
 
