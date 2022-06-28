@@ -1,4 +1,4 @@
-# Onboard new subscription with a different log analytics workspace
+# Onboard new subscription to DFC with an external log analytics workspace
 
 **Author: Rotem Simhi**
 
