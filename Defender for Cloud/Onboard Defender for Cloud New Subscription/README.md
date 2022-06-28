@@ -41,7 +41,7 @@ Connect-AzAccount -Tenant $tenantID -SubscriptionId $SubscriptionId
 ```
 
 
-Running in an Azure DevOps pipeline we are able to use the existing connection of the service principle and set the context with the predefined subscription. but for we would need to set the context of the connection to a variable for later.
+Running in an Azure DevOps pipeline we are able to use the existing connection of the service principle and set the context with the predefined subscription. but for our script to run we need to set the context of the connection to a variable for later.
 
 ```
 # Set the context of the script to apply only to the chosen subsctiption
