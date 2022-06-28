@@ -1,11 +1,11 @@
 # Onboard a new subscription to DFC with a custom log analytics workspace using PowerShell
 
-**Author  : Rotem Simhi**
+**Author  : Rotem Simhi**  
 **Reviewer: Shay Amar**
 
 ## Description
 
-I was asked to create a seemless onboarding experience for new subscriptions created for a customer's tenant. I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So I have created this walkthrough to help with the process.
+I was asked to create a seemless onboarding experience for new subscriptions created for a customer's tenant.  I could not find a single guide that gave me the expected result of an automated procedure which I could integrate in my subscription creation pipeline. So I have created this walkthrough to help with the process.
 
 As you can see I start my walkthrough with zero subscriptions protected by Microsoft Defender for Cloud
 
@@ -147,7 +147,7 @@ The Solutions are also registered in the Log Analytics Workspace
 
 
 ### Set Security event collection tier
-This section is tricky as it requires us to create a request header using our bearer token from the session (This is where we use the $Context variable again).
+This section is tricky as it requires us to create a request header using our bearer token from the session (This is where we use the $Context variable again).  
 After that we need to choose the collection tier we want and invoke a web request to deploy our changes.
 
 ```
